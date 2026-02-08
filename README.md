@@ -2,6 +2,30 @@
 
 **Exercise Use Case**: _"A company wants to understand customer sentiment for one of their products. Write a pipeline that scrapes reviews of the product online and runs sentiment analysis on them. Average the sentiment scores to get an overall score for the product."_
 
+## Demo Video
+
+**Watch a one-minute demonstration** highlighting workflow operations:
+
+**[Download Demo Video (MP4, 16MB)](https://github.com/zailous1/temporal-review-sentiment/releases/download/v1.0/demo.mp4)**
+
+### What the demo shows:
+
+1. **Test Suite** - Running comprehensive unit and workflow tests
+2. **Service Startup** - Launching Temporal development server
+3. **Workflow Execution** - Processing real product reviews with progress tracking
+4. **Query Operations** - Real-time workflow monitoring via `get_progress()` query
+5. **Signal Handling** - Runtime control with pause and resume signals
+
+### Why these patterns matter:
+
+**Queries** enable real-time observability without blocking workflow execution - critical for long-running processes where stakeholders need visibility.
+
+**Signals** provide runtime control for operational scenarios like maintenance windows, manual intervention, rate limiting, or emergency workflow control without cancellation.
+
+This demonstrates Temporal's value proposition beyond durable execution: **observable, controllable, production-ready workflow orchestration**.
+
+---
+
 ## The Problem
 
 Processing hundreds of product reviews across multiple services creates **four critical distributed systems challenges**:
@@ -145,6 +169,17 @@ Purpose-built sentiment analysis instead of GPT/Claude:
 - **Signals** - Runtime workflow control (pause/resume)
 - **Event History** - Complete audit trail of all operations
 - **Deterministic Execution** - Predictable, testable workflow behavior
+
+### Resilience Testing
+
+While not shown in the demo video, this implementation demonstrates durable execution through:
+
+- **Atomic file operations** (`storage.py`) - Prevents data corruption during worker crashes
+- **Idempotent activities** - Safe to retry without side effects
+- **Independent retry policies** - Walmart API and AWS Comprehend failures handled separately
+- **Workflow state persistence** - Running averages maintained durably across restarts
+
+During development, a **real power outage occurred mid-workflow**. After restoration, the workflow completed successfully from its checkpoint with zero data loss or manual intervention - validating Temporal's core durability guarantees in practice.
 
 ## Setup
 
